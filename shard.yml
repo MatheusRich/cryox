@@ -1,0 +1,13 @@
+name: cryox
+version: 0.1.0
+
+authors:
+  - Matheus Richard <matheusrichardt@gmail.com>
+
+targets:
+  cryox:
+    main: src/cryox.cr
+
+crystal: 0.34.0
+
+license: MIT
