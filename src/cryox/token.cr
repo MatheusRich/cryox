@@ -12,5 +12,7 @@ module Cryox
     def inspect
       "<#{type} '#{lexeme}': #{literal} >"
     end
+
+    delegate :to_s, to: :inspect
   end
 end

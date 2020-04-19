@@ -7,4 +7,5 @@ module Cryox
   # TODO: Put your code here
 end
 
+puts Cryox::Token.new(Cryox::TokenType::IDENTIFIER, "index", "index", 1).to_s
 pp Cryox::Token.new(Cryox::TokenType::IDENTIFIER, "index", "index", 1)
