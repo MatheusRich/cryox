@@ -4,7 +4,7 @@ module Cryox
   class Token
     getter type : TokenType
     getter lexeme : String
-    getter literal : String
+    getter literal : String | Float64 | Nil
     getter line : Int32
 
     def initialize(@type, @lexeme, @literal, @line); end
