@@ -10,7 +10,7 @@ module Cryox
     def initialize(@type, @lexeme, @literal, @line); end
 
     def inspect
-      "<#{type} '#{lexeme}': #{literal} >"
+      "<#{type} '#{lexeme}': #{literal}>"
     end
 
     delegate :to_s, to: :inspect
