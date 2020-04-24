@@ -9,7 +9,7 @@ module Cryox
 
   def run
     if ARGV.size.zero?
-      Cryox::Lox.repl
+      Cryox::Lox.run_repl
     elsif ARGV.size == 1
       Cryox::Lox.run_file ARGV.first
     else
@@ -19,4 +19,4 @@ module Cryox
   end
 end
 
-Cryox.run
+# Cryox.run

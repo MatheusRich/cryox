@@ -6,10 +6,12 @@ module Cryox
     class_property had_error : Bool
     @@had_error = false
 
-    def self.repl
-      print "> "
-      self.run(gets || "")
-      self.had_error = false
+    def self.run_repl
+      loop do
+        print "> "
+        self.run(gets || "")
+        self.had_error = false
+      end
     end
 
     def self.run_file(filename)
