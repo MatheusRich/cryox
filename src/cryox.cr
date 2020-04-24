@@ -2,10 +2,21 @@ require "./cryox/*"
 
 # TODO: Write documentation for `Cryox`
 module Cryox
-  VERSION = "0.1.0"
+  extend self
 
-  # TODO: Put your code here
+  VERSION = "0.1.0"
+  ERROR   = 64
+
+  def run
+    if ARGV.size.zero?
+      Cryox::Lox.repl
+    elsif ARGV.size == 1
+      Cryox::Lox.run_file ARGV.first
+    else
+      puts "Usage: cryox [script]"
+      exit ERROR
+    end
+  end
 end
 
-puts Cryox::Token.new(Cryox::TokenType::NUMBER, "10.5", 10.5, 1).to_s
-pp Cryox::Token.new(Cryox::TokenType::IDENTIFIER, "index", "index", 1)
+Cryox.run
