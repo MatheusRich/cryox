@@ -35,7 +35,7 @@ module Cryox
 
     private def self.run(src)
       tokens = Scanner.new(src).scan_tokens
-      puts "tokens: #{tokens}"
+      tokens.each { |t| puts t }
     end
   end
 end
