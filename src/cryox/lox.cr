@@ -24,9 +24,18 @@ module Cryox
       end
     end
 
+    def self.error(line : Int, message : String)
+      report(line, "", message)
+    end
+
+    private def self.report(line : Int, where : String, message : String)
+      puts("[line #{line}] Error#{where}: #{message}")
+      self.had_error = true
+    end
+
     private def self.run(src)
       tokens = Scanner.new(src).scan_tokens
-      puts tokens
+      puts "tokens: #{tokens}"
     end
   end
 end
