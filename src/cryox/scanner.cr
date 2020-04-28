@@ -148,7 +148,7 @@ module Cryox
       text = @src[@start...@current]
       type = KEYWORDS[text]? || TokenType::IDENTIFIER
 
-      add_token(type);
+      add_token(type)
     end
 
     private def digit?(c : Char)
