@@ -1,30 +1,49 @@
 require "./token"
 
-abstract class Cryox::Expr
-  class Binary < Expr
-    getter left : Expr
-    getter operator : Token
-    getter right : Expr
+module Cryox
+  abstract class Expr
+    class Binary < Expr
+      getter left : Expr
+      getter operator : Token
+      getter right : Expr
 
-    def initialize(@left, @operator, @right); end
-  end
+      def initialize(@left, @operator, @right); end
 
-  class Grouping < Expr
-    getter expression : Expr
+      def accept(visitor)
+        visitor.visit_binary_expr(self)
+      end
+    end
 
-    def initialize(@expression); end
-  end
+    class Grouping < Expr
+      getter expression : Expr
 
-  class Literal < Expr
-    getter value : Union(String | Float64 | Nil)
+      def initialize(@expression); end
 
-    def initialize(@value); end
-  end
+      def accept(visitor)
+        visitor.visit_grouping_expr(self)
+      end
+    end
 
-  class Unary < Expr
-    getter operator : Token
-    getter right : Expr
+    class Literal < Expr
+      getter value : Union(String | Float64 | Nil)
 
-    def initialize(@operator, @right); end
+      def initialize(@value); end
+
+      def accept(visitor)
+        visitor.visit_literal_expr(self)
+      end
+    end
+
+    class Unary < Expr
+      getter operator : Token
+      getter right : Expr
+
+      def initialize(@operator, @right); end
+
+      def accept(visitor)
+        visitor.visit_unary_expr(self)
+      end
+    end
+
   end
 end

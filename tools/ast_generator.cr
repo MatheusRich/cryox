@@ -24,14 +24,16 @@ module AstGenerator
     File.open(path, "w") do |file|
       file.puts "require \"./token\""
       file.puts
-      file.puts "abstract class Cryox::#{base_name}"
+      file.puts "module Cryox"
+      file.puts "  abstract class #{base_name}"
 
-      define_visitor_interface(file, base_name, types)
+      # define_visitor_interface(file, base_name, types)
       define_ast_types(file, base_name, types)
 
       file.puts
-      file.puts "  abstract def accept(visitor : Visitor(R)) : R"
+      # file.puts "    abstract def accept(visitor : Visitor(R)) : R"
 
+      file.puts "  end"
       file.puts "end"
     end
   end
@@ -57,7 +59,7 @@ module AstGenerator
   end
 
   private def define_type(file, base_name : String, class_name : String, field_list : String, last? : Bool)
-    file.puts "  class #{class_name} < #{base_name}"
+    file.puts "    class #{class_name} < #{base_name}"
 
     fields = field_list.split(", ")
 
@@ -65,27 +67,27 @@ module AstGenerator
     define_initializer(file, fields)
     define_visitor(file, class_name, base_name)
 
-    file.puts "  end"
+    file.puts "    end"
     file.puts unless last?
   end
 
   private def define_getters(file, fields)
     fields.each do |field|
-      file.puts "    getter #{field}"
+      file.puts "      getter #{field}"
     end
     file.puts
   end
 
   private def define_initializer(file, fields)
     instance_variables = fields.map { |field| "@" + field.split(":").first.strip }
-    file.puts "    def initialize(#{instance_variables.join(", ")}); end"
+    file.puts "      def initialize(#{instance_variables.join(", ")}); end"
   end
 
   private def define_visitor(file, class_name, base_name)
     file.puts
-    file.puts "    def accept(visitor : Visitor(R)) : R"
-    file.puts "      visitor.visit_#{class_name.downcase}_#{base_name.downcase}(self)"
-    file.puts "    end"
+    file.puts "      def accept(visitor)"
+    file.puts "        visitor.visit_#{class_name.downcase}_#{base_name.downcase}(self)"
+    file.puts "      end"
   end
 end
 
