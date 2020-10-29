@@ -1,13 +1,15 @@
 module AstGenerator
   extend self
-  
+
   def run
     if ARGV.size != 1
       puts("Usage: generate_ast <output directory>")
       puts("  tip: $ crystal run tools/ast_generator.cr -- src/cryox")
       exit 1
     end
+
     output_dir = ARGV.first
+
     define_ast(output_dir, "Expr", [
       "Binary   = left : Expr, operator : Token, right : Expr",
       "Grouping = expression : Expr",
@@ -26,26 +28,37 @@ module AstGenerator
 
       types.each_with_index do |type, index|
         class_name, fields = type.split("=").map(&.strip)
-        define_type(file, base_name, class_name, fields, index == (types.size - 1))
+        is_last = index == (types.size - 1)
+
+        define_type(file, base_name, class_name, fields, is_last)
       end
 
       file.puts "end"
     end
   end
 
-  private def self.define_type(file, base_name : String, class_name : String, field_list : String, last? : Bool)
+  private def define_type(file, base_name : String, class_name : String, field_list : String, last? : Bool)
     file.puts "  class #{class_name} < #{base_name}"
 
     fields = field_list.split(", ")
+
+    define_getters(file, fields)
+    define_initializer(file, fields)
+
+    file.puts "  end"
+    file.puts unless last?
+  end
+
+  private def define_getters(file, fields)
     fields.each do |field|
       file.puts "    getter #{field}"
     end
     file.puts
+  end
 
+  private def define_initializer(file, fields)
     instance_variables = fields.map { |field| "@" + field.split(":").first.strip }
     file.puts "    def initialize(#{instance_variables.join(", ")}); end"
-    file.puts "  end"
-    file.puts unless last?
   end
 end
 
