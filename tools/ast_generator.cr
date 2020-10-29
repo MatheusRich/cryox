@@ -26,14 +26,33 @@ module AstGenerator
       file.puts
       file.puts "abstract class Cryox::#{base_name}"
 
-      types.each_with_index do |type, index|
-        class_name, fields = type.split("=").map(&.strip)
-        is_last = index == (types.size - 1)
+      define_visitor_interface(file, base_name, types)
+      define_ast_types(file, base_name, types)
 
-        define_type(file, base_name, class_name, fields, is_last)
-      end
+      file.puts
+      file.puts "  abstract def accept(visitor : Visitor(R)) : R"
 
       file.puts "end"
+    end
+  end
+
+  private def define_visitor_interface(file, base_name, types)
+    file.puts "  module Visitor(R)"
+
+    types.each do |type|
+      type_name, _ = type.split("=").map(&.strip)
+      file.puts "    abstract def visit_#{type_name.downcase}_#{base_name.downcase}(#{base_name.downcase} : #{type_name}) : R"
+    end
+    file.puts "  end"
+    file.puts
+  end
+
+  private def define_ast_types(file, base_name, types)
+    types.each_with_index do |type, index|
+      class_name, fields = type.split("=").map(&.strip)
+      is_last = index == (types.size - 1)
+
+      define_type(file, base_name, class_name, fields, is_last)
     end
   end
 
@@ -44,6 +63,7 @@ module AstGenerator
 
     define_getters(file, fields)
     define_initializer(file, fields)
+    define_visitor(file, class_name, base_name)
 
     file.puts "  end"
     file.puts unless last?
@@ -59,6 +79,13 @@ module AstGenerator
   private def define_initializer(file, fields)
     instance_variables = fields.map { |field| "@" + field.split(":").first.strip }
     file.puts "    def initialize(#{instance_variables.join(", ")}); end"
+  end
+
+  private def define_visitor(file, class_name, base_name)
+    file.puts
+    file.puts "    def accept(visitor : Visitor(R)) : R"
+    file.puts "      visitor.visit_#{class_name.downcase}_#{base_name.downcase}(self)"
+    file.puts "    end"
   end
 end
 
