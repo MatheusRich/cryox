@@ -30,7 +30,7 @@ module Cryox
     end
 
     def scan_tokens : Array(Token)
-      until at_end
+      until at_end?
         @start = @current
         scan_token
       end
@@ -39,7 +39,7 @@ module Cryox
       @tokens
     end
 
-    private def at_end
+    private def at_end?
       @current >= @src.size
     end
 
@@ -99,18 +99,18 @@ module Cryox
     end
 
     private def consume_comment
-      until peek == '\n' || at_end
+      until peek == '\n' || at_end?
         advance
       end
     end
 
     private def consume_string
-      until peek == '"' || at_end
+      until peek == '"' || at_end?
         @line += 1 if peek == '\n'
         advance
       end
 
-      if at_end
+      if at_end?
         Lox.error(@line, "Unterminated string")
         return
       end
@@ -164,7 +164,7 @@ module Cryox
     end
 
     private def peek : Char
-      return '\0' if at_end
+      return '\0' if at_end?
 
       @src[@current]
     end
@@ -182,7 +182,7 @@ module Cryox
     end
 
     private def match(expected : Char) : Bool
-      return false if at_end
+      return false if at_end?
       return false if @src[@current] != expected
 
       @current += 1
