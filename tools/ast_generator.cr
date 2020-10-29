@@ -1,7 +1,10 @@
-class AstGenerator
-  def self.run
+module AstGenerator
+  extend self
+  
+  def run
     if ARGV.size != 1
       puts("Usage: generate_ast <output directory>")
+      puts("  tip: $ crystal run tools/ast_generator.cr -- src/cryox")
       exit 1
     end
     output_dir = ARGV.first
@@ -13,7 +16,7 @@ class AstGenerator
     ])
   end
 
-  private def self.define_ast(output_dir : String, base_name : String, types : Array(String))
+  private def define_ast(output_dir : String, base_name : String, types : Array(String))
     path = output_dir + "/" + base_name.downcase + ".cr"
 
     File.open(path, "w") do |file|
