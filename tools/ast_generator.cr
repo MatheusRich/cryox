@@ -27,11 +27,11 @@ module AstGenerator
       file.puts "module Cryox"
       file.puts "  abstract class #{base_name}"
 
-      # define_visitor_interface(file, base_name, types)
+      define_visitor_interface(file, base_name, types)
       define_ast_types(file, base_name, types)
 
       file.puts
-      # file.puts "    abstract def accept(visitor : Visitor(R)) : R"
+      file.puts "    abstract def accept(visitor : Visitor)"
 
       file.puts "  end"
       file.puts "end"
@@ -39,13 +39,13 @@ module AstGenerator
   end
 
   private def define_visitor_interface(file, base_name, types)
-    file.puts "  module Visitor(R)"
+    file.puts "    module Visitor"
 
     types.each do |type|
       type_name, _ = type.split("=").map(&.strip)
-      file.puts "    abstract def visit_#{type_name.downcase}_#{base_name.downcase}(#{base_name.downcase} : #{type_name}) : R"
+      file.puts "      abstract def visit_#{type_name.downcase}_#{base_name.downcase}(#{base_name.downcase} : #{type_name})"
     end
-    file.puts "  end"
+    file.puts "    end"
     file.puts
   end
 
@@ -85,7 +85,7 @@ module AstGenerator
 
   private def define_visitor(file, class_name, base_name)
     file.puts
-    file.puts "      def accept(visitor)"
+    file.puts "      def accept(visitor : Visitor)"
     file.puts "        visitor.visit_#{class_name.downcase}_#{base_name.downcase}(self)"
     file.puts "      end"
   end

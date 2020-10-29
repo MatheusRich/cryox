@@ -2,6 +2,13 @@ require "./token"
 
 module Cryox
   abstract class Expr
+    module Visitor
+      abstract def visit_binary_expr(expr : Binary)
+      abstract def visit_grouping_expr(expr : Grouping)
+      abstract def visit_literal_expr(expr : Literal)
+      abstract def visit_unary_expr(expr : Unary)
+    end
+
     class Binary < Expr
       getter left : Expr
       getter operator : Token
@@ -9,7 +16,7 @@ module Cryox
 
       def initialize(@left, @operator, @right); end
 
-      def accept(visitor)
+      def accept(visitor : Visitor)
         visitor.visit_binary_expr(self)
       end
     end
@@ -19,7 +26,7 @@ module Cryox
 
       def initialize(@expression); end
 
-      def accept(visitor)
+      def accept(visitor : Visitor)
         visitor.visit_grouping_expr(self)
       end
     end
@@ -29,7 +36,7 @@ module Cryox
 
       def initialize(@value); end
 
-      def accept(visitor)
+      def accept(visitor : Visitor)
         visitor.visit_literal_expr(self)
       end
     end
@@ -40,10 +47,11 @@ module Cryox
 
       def initialize(@operator, @right); end
 
-      def accept(visitor)
+      def accept(visitor : Visitor)
         visitor.visit_unary_expr(self)
       end
     end
 
+    abstract def accept(visitor : Visitor)
   end
 end
