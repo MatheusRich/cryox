@@ -13,7 +13,7 @@ module AstGenerator
     define_ast(output_dir, "Expr", [
       "Binary   = left : Expr, operator : Token, right : Expr",
       "Grouping = expression : Expr",
-      "Literal  = value : Union(String | Float64 | Nil)",
+      "Literal  = value : Union(String | Float64 | Bool | Nil)",
       "Unary    = operator : Token, right : Expr",
     ])
   end

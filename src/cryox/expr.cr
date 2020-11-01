@@ -32,7 +32,7 @@ module Cryox
     end
 
     class Literal < Expr
-      getter value : Union(String | Float64 | Nil)
+      getter value : Union(String | Float64 | Bool | Nil)
 
       def initialize(@value); end
 
