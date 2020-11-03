@@ -1,12 +1,16 @@
 require "./macros/class_variable_property"
 require "./scanner"
 require "./parser"
+require "./interpreter"
 require "./ast_printer"
+require "./runtime_error"
 
 module Cryox
   class Lox
-    class_property had_error : Bool
+    class_property had_error : Bool, had_runtime_error : Bool, interpreter : Interpreter
     @@had_error = false
+    @@had_runtime_error = false
+    @@interpreter = Interpreter.new
 
     def self.run_repl
       loop do
@@ -21,9 +25,8 @@ module Cryox
     rescue File::NotFoundError
       puts "File not found"
     ensure
-      if had_error
-        exit 65
-      end
+      exit(65) if had_error
+      exit(70) if had_runtime_error
     end
 
     def self.error(token : Token, message : String)
@@ -38,6 +41,12 @@ module Cryox
       report(line, "", message)
     end
 
+    def self.runtime_error(error : RuntimeError)
+      puts "#{error.message}\n[line #{error.token.line}]"
+
+      self.had_runtime_error = true
+    end
+
     private def self.report(line : Int, where : String, message : String)
       puts("[line #{line}] Error#{where}: #{message}")
 
@@ -50,9 +59,11 @@ module Cryox
       expression = parser.parse
 
       return if had_error
+      return if had_runtime_error
       return if expression.nil?
 
-      puts AstPrinter.new.print(expression)
+      interpreter.interpret(expression)
+      # puts AstPrinter.new.print(expression)
     end
   end
 end
