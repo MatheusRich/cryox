@@ -61,9 +61,9 @@ module Cryox
 
         return left.as(Float64) <= right.as(Float64)
       when .bang_equal?
-        !equal?(left, right)
-      when .equal?
-        equal?(left, right)
+        return !equal?(left, right)
+      when .equal_equal?
+        return equal?(left, right)
       when .minus?
         check_number_operands(expr.operator, left, right)
 
@@ -80,6 +80,7 @@ module Cryox
         raise RuntimeError.new(expr.operator, "Operands must be two numbers or two strings.")
       when .slash?
         check_number_operands(expr.operator, left, right)
+        check_zero_division(expr.operator, right)
 
         return left.as(Float64) / right.as(Float64)
       when .star?
@@ -133,6 +134,10 @@ module Cryox
       return if left.is_a? Float64 && right.is_a? Float64
 
       raise RuntimeError.new(operator, "Operands must be numbers.")
+    end
+
+    private def check_zero_division(operator : Token, number)
+      raise RuntimeError.new(operator, "Divided by zero.") if number == 0
     end
   end
 end
