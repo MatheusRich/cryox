@@ -1,0 +1,3 @@
+#!/bin/bash
+
+crystal build --verbose --release src/cli.cr -o bin/cryox
