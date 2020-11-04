@@ -20,6 +20,7 @@ module AstGenerator
     ])
 
     define_ast(output_dir, "Stmt", [
+      "Block      = statements : Array(Stmt)",
       "Expression = expression : Expr",
       "Print      = expression : Expr",
       "Var        = name : Token, initializer : Expr",

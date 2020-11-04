@@ -3,9 +3,20 @@ require "./token"
 module Cryox
   abstract class Stmt
     module Visitor
+      abstract def visit_block_stmt(stmt : Block)
       abstract def visit_expression_stmt(stmt : Expression)
       abstract def visit_print_stmt(stmt : Print)
       abstract def visit_var_stmt(stmt : Var)
+    end
+
+    class Block < Stmt
+      getter statements : Array(Stmt)
+
+      def initialize(@statements); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_block_stmt(self)
+      end
     end
 
     class Expression < Stmt

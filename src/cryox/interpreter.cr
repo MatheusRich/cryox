@@ -11,7 +11,7 @@ module Cryox
     include Expr::Visitor
     include Stmt::Visitor
 
-    getter environment : Environment
+    getter! environment : Environment
 
     def initialize
       @environment = Environment.new
@@ -103,6 +103,13 @@ module Cryox
       nil
     end
 
+    def visit_assign_expr(expr : Expr::Assign) : LoxObj
+      value = evaluate(expr.value)
+      environment.assign(expr.name, value)
+
+      value
+    end
+
     def visit_expression_stmt(stmt : Stmt::Expression) : Nil
       evaluate(stmt.expression)
     end
@@ -119,11 +126,8 @@ module Cryox
       environment.define(stmt.name.lexeme, value)
     end
 
-    def visit_assign_expr(expr : Expr::Assign) : LoxObj
-      value = evaluate(expr.value)
-      environment.assign( expr.name, value)
-
-      value
+    def visit_block_stmt(stmt : Stmt::Block) : Nil
+      execute_block(stmt.statements, Environment.new(environment))
     end
 
     private def evaluate(expr : Expr) : LoxObj
@@ -132,6 +136,15 @@ module Cryox
 
     private def execute(stmt : Stmt) : Nil
       stmt.accept(self)
+    end
+
+    private def execute_block(statements : Array(Stmt), new_enviroment : Environment) : Nil
+      previous = @environment
+      @environment = new_enviroment
+
+      statements.each { |s| execute(s) }
+    ensure
+      @environment = previous
     end
 
     private def truthy?(object : LoxObj) : Bool

@@ -40,6 +40,7 @@ module Cryox
 
     private def statement : Stmt
       return print_statement if match(TokenType::PRINT)
+      return Stmt::Block.new(block) if match(TokenType::LEFT_BRACE)
 
       expression_statement
     end
@@ -65,6 +66,18 @@ module Cryox
       consume(TokenType::SEMICOLON, "Expect ';' after expression.")
 
       Stmt::Expression.new(expr)
+    end
+
+    private def block : Array(Stmt)
+      statements = [] of Stmt
+
+      while !check(TokenType::RIGHT_BRACE) && !at_end?
+        statements.push(declaration)
+      end
+
+      consume(TokenType::RIGHT_BRACE, "Expect '}' after block.")
+
+      statements
     end
 
     private def assignment : Expr
