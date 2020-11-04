@@ -13,3 +13,10 @@ Metrics/CyclomaticComplexity:
   Excluded:
   - src/cryox/scanner.cr
   - src/cryox/interpreter.cr
+
+Globs:
+  - '**/*.cr'
+  - '!lib'
+
+Excluded:
+  - 'lib/**/*'
