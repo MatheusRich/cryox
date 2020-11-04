@@ -233,9 +233,9 @@ module Cryox
         when .class?, .fun?, .var?, .for?, .if?, .while?, .print?, .return?
           return
         end
-      end
 
-      advance
+        advance
+      end
     end
   end
 end
