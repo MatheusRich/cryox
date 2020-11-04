@@ -1,0 +1,3 @@
+require "./cryox"
+
+Cryox.run
