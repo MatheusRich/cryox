@@ -1,32 +1,34 @@
 #!/usr/bin/env ruby
 
 # Copied from https://stackoverflow.com/a/15104926/8650655
-def count_lines(ext)
-  o = 0 # Number of files
-  n = 0 # Number of lines of code
-  m = 0 # Number of lines of comments
+def count_lines(path)
+  return puts "ERROR: no path given" if path.nil?
 
-  files = Dir.glob("./src/**/*." + ext)
+  file_count = 0 # Number of files
+  line_count = 0 # Number of lines of code
+  comment_count = 0 # Number of lines of comments
+
+  files = Dir.glob(path)
 
   files.each do |f|
     next if f.index("vendor")
     next if File.directory?(f)
-    o += 1
-    i = 0
+    file_count += 1
+    loc = 0
     File.read(f).each_line do |line|
       if line.strip.start_with? "#"
-        m += 1
+        comment_count += 1
         next
       end
-      i += 1
+      loc += 1
     end
-    n += i
+    line_count += loc
   end
 
-  puts "#{o} files."
-  puts "#{n} lines of code."
-  puts "#{(n.to_f/o.to_f).round(2)} LOC/file."
-  puts "#{m} lines of comments."
+  puts "#{file_count} files."
+  puts "#{line_count} lines of code."
+  puts "#{(line_count.to_f/file_count.to_f).round(2)} LOC/file."
+  puts "#{comment_count} lines of comments."
 end
 
-count_lines("cr")
+count_lines(ARGV.first)
