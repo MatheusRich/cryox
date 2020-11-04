@@ -1,15 +1,21 @@
 require "./lox"
+require "./lox_obj"
 require "./token"
 require "./expr"
 require "./stmt"
 require "./runtime_error"
+require "./environment"
 
 module Cryox
   class Interpreter
-    alias LoxObj = String | Float64 | Bool | Nil
-
     include Expr::Visitor
     include Stmt::Visitor
+
+    getter environment : Environment
+
+    def initialize
+      @environment = Environment.new
+    end
 
     def interpret(statements : Array(Stmt)) : Nil
       statements.each { |stmt| execute(stmt) }
@@ -38,6 +44,10 @@ module Cryox
 
       # Unreachable
       nil
+    end
+
+    def visit_variable_expr(expr : Expr::Variable) : LoxObj
+      environment.get(expr.name)
     end
 
     def visit_binary_expr(expr : Expr::Binary) : LoxObj
@@ -103,7 +113,20 @@ module Cryox
       puts(stringify object)
     end
 
-    private def evaluate(expr : Expr)
+    def visit_var_stmt(stmt : Stmt::Var) : Nil
+      value : LoxObj = nil
+      value = evaluate(stmt.initializer) unless stmt.initializer.nil?
+      environment.define(stmt.name.lexeme, value)
+    end
+
+    def visit_assign_expr(expr : Expr::Assign) : LoxObj
+      value = evaluate(expr.value)
+      environment.assign( expr.name, value)
+
+      value
+    end
+
+    private def evaluate(expr : Expr) : LoxObj
       expr.accept(self)
     end
 

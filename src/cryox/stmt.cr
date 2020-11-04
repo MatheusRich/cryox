@@ -5,6 +5,7 @@ module Cryox
     module Visitor
       abstract def visit_expression_stmt(stmt : Expression)
       abstract def visit_print_stmt(stmt : Print)
+      abstract def visit_var_stmt(stmt : Var)
     end
 
     class Expression < Stmt
@@ -24,6 +25,17 @@ module Cryox
 
       def accept(visitor : Visitor)
         visitor.visit_print_stmt(self)
+      end
+    end
+
+    class Var < Stmt
+      getter name : Token
+      getter initializer : Expr
+
+      def initialize(@name, @initializer); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_var_stmt(self)
       end
     end
 

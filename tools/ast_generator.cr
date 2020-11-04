@@ -11,15 +11,18 @@ module AstGenerator
     output_dir = ARGV.first
 
     define_ast(output_dir, "Expr", [
+      "Assign   = name : Token, value : Expr",
       "Binary   = left : Expr, operator : Token, right : Expr",
       "Grouping = expression : Expr",
       "Literal  = value : Union(String | Float64 | Bool | Nil)",
       "Unary    = operator : Token, right : Expr",
+      "Variable = name : Token",
     ])
 
     define_ast(output_dir, "Stmt", [
       "Expression = expression : Expr",
       "Print      = expression : Expr",
+      "Var        = name : Token, initializer : Expr",
     ])
   end
 

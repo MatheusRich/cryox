@@ -3,10 +3,23 @@ require "./token"
 module Cryox
   abstract class Expr
     module Visitor
+      abstract def visit_assign_expr(expr : Assign)
       abstract def visit_binary_expr(expr : Binary)
       abstract def visit_grouping_expr(expr : Grouping)
       abstract def visit_literal_expr(expr : Literal)
       abstract def visit_unary_expr(expr : Unary)
+      abstract def visit_variable_expr(expr : Variable)
+    end
+
+    class Assign < Expr
+      getter name : Token
+      getter value : Expr
+
+      def initialize(@name, @value); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_assign_expr(self)
+      end
     end
 
     class Binary < Expr
@@ -49,6 +62,16 @@ module Cryox
 
       def accept(visitor : Visitor)
         visitor.visit_unary_expr(self)
+      end
+    end
+
+    class Variable < Expr
+      getter name : Token
+
+      def initialize(@name); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_variable_expr(self)
       end
     end
 

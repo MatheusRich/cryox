@@ -17,14 +17,25 @@ module Cryox
       statements = [] of Stmt
 
       until at_end?
-        statements.push(statement)
+        statements.push(declaration)
       end
 
       statements
     end
 
+    private def declaration : Stmt?
+      return var_declaration if match(TokenType::VAR)
+
+      statement
+    rescue e : ParserError
+      synchronize
+
+      # FIXME: not sure about this
+      Stmt::Expression.new(Expr::Literal.new(nil))
+    end
+
     private def expression : Expr
-      equality
+      assignment
     end
 
     private def statement : Stmt
@@ -40,11 +51,39 @@ module Cryox
       Stmt::Print.new(value)
     end
 
+    private def var_declaration : Stmt
+      name = consume(TokenType::IDENTIFIER, "Expect variable name.")
+      initializer : Expr = Expr::Literal.new(nil)
+      initializer = expression if match(TokenType::EQUAL)
+      consume(TokenType::SEMICOLON, "Expect ';' after variable declaration.")
+
+      Stmt::Var.new(name, initializer)
+    end
+
     private def expression_statement
       expr = expression
       consume(TokenType::SEMICOLON, "Expect ';' after expression.")
 
       Stmt::Expression.new(expr)
+    end
+
+    private def assignment : Expr
+      expr = equality
+
+      if match(TokenType::EQUAL)
+        equals = previous
+        value = assignment
+
+        if expr.is_a? Expr::Variable
+          name = expr.name
+
+          return Expr::Assign.new(name, value)
+        end
+
+        error(equals, "Invalid assignment target.")
+      end
+
+      expr
     end
 
     private def equality : Expr
@@ -111,6 +150,7 @@ module Cryox
       return Expr::Literal.new(true) if match(TokenType::TRUE)
       return Expr::Literal.new(nil) if match(TokenType::NIL)
       return Expr::Literal.new(previous.literal) if match(TokenType::NUMBER, TokenType::STRING)
+      return Expr::Variable.new(previous) if match(TokenType::IDENTIFIER)
 
       if match(TokenType::LEFT_PAREN)
         expr = expression

@@ -26,6 +26,14 @@ module Cryox
       parenthesize(expr.operator.lexeme, expr.right)
     end
 
+    def visit_variable_expr(expr : Expr::Variable)
+      parenthesize("var #{expr.name}")
+    end
+
+    def visit_assign_expr(expr : Expr::Assign)
+      parenthesize("#{expr.name} = #{expr.value}")
+    end
+
     private def parenthesize(name : String, *exprs) : String
       str = "(#{name}"
 
