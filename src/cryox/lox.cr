@@ -15,6 +15,7 @@ module Cryox
     def self.run_repl
       loop do
         print "> "
+        # TODO: Print expressions
         self.run(gets || "")
         self.had_error = false
       end

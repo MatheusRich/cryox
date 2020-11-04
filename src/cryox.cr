@@ -18,5 +18,3 @@ module Cryox
     end
   end
 end
-
-# Cryox.run

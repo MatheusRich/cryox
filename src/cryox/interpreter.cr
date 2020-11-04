@@ -1,8 +1,8 @@
 require "./lox"
-require "./lox_obj"
 require "./token"
 require "./expr"
 require "./stmt"
+require "./lox_obj"
 require "./runtime_error"
 require "./environment"
 
