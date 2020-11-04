@@ -1,6 +1,7 @@
 require "./lox"
 require "./token"
 require "./expr"
+require "./stmt"
 require "./runtime_error"
 
 module Cryox
@@ -8,11 +9,10 @@ module Cryox
     alias LoxObj = String | Float64 | Bool | Nil
 
     include Expr::Visitor
+    include Stmt::Visitor
 
-    def interpret(expr : Expr) : Nil
-      value : LoxObj = evaluate(expr)
-
-      puts stringify(value)
+    def interpret(statements : Array(Stmt)) : Nil
+      statements.each { |stmt| execute(stmt) }
     rescue e : RuntimeError
       Lox.runtime_error(e)
     end
@@ -93,8 +93,22 @@ module Cryox
       nil
     end
 
+    def visit_expression_stmt(stmt : Stmt::Expression) : Nil
+      evaluate(stmt.expression)
+    end
+
+    def visit_print_stmt(stmt : Stmt::Print) : Nil
+      object = evaluate(stmt.expression)
+
+      puts(stringify object)
+    end
+
     private def evaluate(expr : Expr)
       expr.accept(self)
+    end
+
+    private def execute(stmt : Stmt) : Nil
+      stmt.accept(self)
     end
 
     private def truthy?(object : LoxObj) : Bool

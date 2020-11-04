@@ -2,6 +2,7 @@ require "./lox"
 require "./token"
 require "./token_type"
 require "./expr"
+require "./stmt"
 
 module Cryox
   class Parser
@@ -12,14 +13,38 @@ module Cryox
 
     def initialize(@tokens, @current = 0); end
 
-    def parse : Expr?
-      expression
-    rescue e : ParserError
-      nil
+    def parse : Array(Stmt)
+      statements = [] of Stmt
+
+      until at_end?
+        statements.push(statement)
+      end
+
+      statements
     end
 
     private def expression : Expr
       equality
+    end
+
+    private def statement : Stmt
+      return print_statement if match(TokenType::PRINT)
+
+      expression_statement
+    end
+
+    private def print_statement : Stmt
+      value = expression
+      consume(TokenType::SEMICOLON, "Expect ';' after value.")
+
+      Stmt::Print.new(value)
+    end
+
+    private def expression_statement
+      expr = expression
+      consume(TokenType::SEMICOLON, "Expect ';' after expression.")
+
+      Stmt::Expression.new(expr)
     end
 
     private def equality : Expr

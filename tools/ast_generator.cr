@@ -16,6 +16,11 @@ module AstGenerator
       "Literal  = value : Union(String | Float64 | Bool | Nil)",
       "Unary    = operator : Token, right : Expr",
     ])
+
+    define_ast(output_dir, "Stmt", [
+      "Expression = expression : Expr",
+      "Print      = expression : Expr",
+    ])
   end
 
   private def define_ast(output_dir : String, base_name : String, types : Array(String))
