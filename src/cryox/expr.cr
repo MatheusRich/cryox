@@ -7,6 +7,7 @@ module Cryox
       abstract def visit_binary_expr(expr : Binary)
       abstract def visit_grouping_expr(expr : Grouping)
       abstract def visit_literal_expr(expr : Literal)
+      abstract def visit_logical_expr(expr : Logical)
       abstract def visit_unary_expr(expr : Unary)
       abstract def visit_variable_expr(expr : Variable)
     end
@@ -51,6 +52,18 @@ module Cryox
 
       def accept(visitor : Visitor)
         visitor.visit_literal_expr(self)
+      end
+    end
+
+    class Logical < Expr
+      getter left : Expr
+      getter operator : Token
+      getter right : Expr
+
+      def initialize(@left, @operator, @right); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_logical_expr(self)
       end
     end
 

@@ -5,6 +5,7 @@ module Cryox
     module Visitor
       abstract def visit_block_stmt(stmt : Block)
       abstract def visit_expression_stmt(stmt : Expression)
+      abstract def visit_if_stmt(stmt : If)
       abstract def visit_print_stmt(stmt : Print)
       abstract def visit_var_stmt(stmt : Var)
     end
@@ -26,6 +27,18 @@ module Cryox
 
       def accept(visitor : Visitor)
         visitor.visit_expression_stmt(self)
+      end
+    end
+
+    class If < Stmt
+      getter condition : Expr
+      getter then_branch : Stmt
+      getter else_branch : Stmt?
+
+      def initialize(@condition, @then_branch, @else_branch); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_if_stmt(self)
       end
     end
 

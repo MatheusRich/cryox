@@ -39,10 +39,23 @@ module Cryox
     end
 
     private def statement : Stmt
+      return if_statement if match(TokenType::IF)
       return print_statement if match(TokenType::PRINT)
       return Stmt::Block.new(block) if match(TokenType::LEFT_BRACE)
 
       expression_statement
+    end
+
+    private def if_statement : Stmt
+      consume(TokenType::LEFT_PAREN, "Expect '(' after 'if'.")
+      condition = expression()
+      consume(TokenType::RIGHT_PAREN, "Expect ')' after if condition.")
+
+      then_branch = statement
+      else_branch = nil
+      else_branch = statement if match(TokenType::ELSE)
+
+      Stmt::If.new(condition, then_branch, else_branch)
     end
 
     private def print_statement : Stmt
@@ -81,7 +94,7 @@ module Cryox
     end
 
     private def assignment : Expr
-      expr = equality
+      expr = or_expr
 
       if match(TokenType::EQUAL)
         equals = previous
@@ -94,6 +107,30 @@ module Cryox
         end
 
         error(equals, "Invalid assignment target.")
+      end
+
+      expr
+    end
+
+    private def or_expr : Expr
+      expr = and_expr
+
+      while match(TokenType::OR)
+        operator = previous
+        right = and_expr
+        expr = Expr::Logical.new(expr, operator, right)
+      end
+
+      expr
+    end
+
+    private def and_expr : Expr
+      expr = equality
+
+      while match(TokenType::OR)
+        operator = previous
+        right = equality
+        expr = Expr::Logical.new(expr, operator, right)
       end
 
       expr

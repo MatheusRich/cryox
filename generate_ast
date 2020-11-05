@@ -1,0 +1,3 @@
+#!/bin/bash
+
+crystal run tools/ast_generator.cr -- src/cryox

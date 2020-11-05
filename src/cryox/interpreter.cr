@@ -27,6 +27,19 @@ module Cryox
       expr.value
     end
 
+    def visit_logical_expr(expr : Expr::Logical) : LoxObj
+      left = evaluate(expr.left)
+
+      case expr.operator.type
+      when .or?
+        return left if truthy?(left)
+      else # .and?
+        return left if !truthy?(left)
+      end
+
+      evaluate(expr.right)
+    end
+
     def visit_grouping_expr(expr : Expr::Grouping) : LoxObj
       evaluate(expr.expression)
     end
@@ -112,6 +125,14 @@ module Cryox
 
     def visit_expression_stmt(stmt : Stmt::Expression) : Nil
       evaluate(stmt.expression)
+    end
+
+    def visit_if_stmt(stmt : Stmt::If) : Nil
+      if truthy?(evaluate(stmt.condition))
+        execute(stmt.then_branch)
+      elsif stmt.else_branch != nil
+        execute(stmt.else_branch.not_nil!)
+      end
     end
 
     def visit_print_stmt(stmt : Stmt::Print) : Nil

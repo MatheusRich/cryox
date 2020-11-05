@@ -15,6 +15,7 @@ module AstGenerator
       "Binary   = left : Expr, operator : Token, right : Expr",
       "Grouping = expression : Expr",
       "Literal  = value : Union(String | Float64 | Bool | Nil)",
+      "Logical  = left : Expr, operator : Token , right : Expr",
       "Unary    = operator : Token, right : Expr",
       "Variable = name : Token",
     ])
@@ -22,6 +23,7 @@ module AstGenerator
     define_ast(output_dir, "Stmt", [
       "Block      = statements : Array(Stmt)",
       "Expression = expression : Expr",
+      "If         = condition : Expr, then_branch : Stmt, else_branch : Stmt?",
       "Print      = expression : Expr",
       "Var        = name : Token, initializer : Expr",
     ])

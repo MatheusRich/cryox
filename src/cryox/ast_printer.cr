@@ -34,6 +34,10 @@ module Cryox
       parenthesize("#{expr.name} = #{expr.value}")
     end
 
+    def visit_logical_expr(expr : Expr::Logical)
+      parenthesize("#{expr.left} #{expr.operator.lexeme} = #{expr.left}")
+    end
+
     private def parenthesize(name : String, *exprs) : String
       str = "(#{name}"
 
