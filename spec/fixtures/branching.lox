@@ -1,0 +1,14 @@
+if ("true") print "it runs then branch on truthy conditions";
+if (false) print "fails";
+if (nil) print "fails";
+else print "it runs else branch on falsey conditions";
+if (false) {
+  print "fails";
+} else if (true) {
+  print "it allows elsif";
+} else {
+  print "fails";
+}
+
+print "it shorts circuits on truthy conditions" or "fails";
+print nil or "it uses second operand if first is falsey";
