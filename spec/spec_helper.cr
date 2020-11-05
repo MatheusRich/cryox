@@ -5,7 +5,7 @@ class Feature
   def initialize(@features : String); end
 
   def assert(expected_feature)
-    it "assert that #{expected_feature}" do
+    it "asserts that #{expected_feature}" do
       @features.should match /#{expected_feature}/
     end
   end
