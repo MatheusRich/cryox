@@ -1,0 +1,14 @@
+var n = 0;
+while(n == 0) {
+  print "it runs on true conditions";
+  n = n + 1;
+}
+
+n = "false";
+while(n) {
+  print "it runs on truthy conditions";
+  n = nil;
+}
+
+while(false) print "fails";
+while(nil) print "fails";

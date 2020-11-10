@@ -41,6 +41,7 @@ module Cryox
     private def statement : Stmt
       return if_statement if match(TokenType::IF)
       return print_statement if match(TokenType::PRINT)
+      return while_statement if match(TokenType::WHILE)
       return Stmt::Block.new(block) if match(TokenType::LEFT_BRACE)
 
       expression_statement
@@ -72,6 +73,15 @@ module Cryox
       consume(TokenType::SEMICOLON, "Expect ';' after variable declaration.")
 
       Stmt::Var.new(name, initializer)
+    end
+
+    private def while_statement : Stmt
+      consume(TokenType::LEFT_PAREN, "Expect '(' after 'while'.")
+      condition = expression
+      consume(TokenType::RIGHT_PAREN, "Expect ')' after condition.")
+      body = statement
+
+      Stmt::While.new(condition, body)
     end
 
     private def expression_statement

@@ -8,6 +8,7 @@ module Cryox
       abstract def visit_if_stmt(stmt : If)
       abstract def visit_print_stmt(stmt : Print)
       abstract def visit_var_stmt(stmt : Var)
+      abstract def visit_while_stmt(stmt : While)
     end
 
     class Block < Stmt
@@ -60,6 +61,17 @@ module Cryox
 
       def accept(visitor : Visitor)
         visitor.visit_var_stmt(self)
+      end
+    end
+
+    class While < Stmt
+      getter condition : Expr
+      getter body : Stmt
+
+      def initialize(@condition, @body); end
+
+      def accept(visitor : Visitor)
+        visitor.visit_while_stmt(self)
       end
     end
 

@@ -147,6 +147,12 @@ module Cryox
       environment.define(stmt.name.lexeme, value)
     end
 
+    def visit_while_stmt(stmt : Stmt::While) : Nil
+      while truthy?(evaluate(stmt.condition))
+        execute(stmt.body)
+      end
+    end
+
     def visit_block_stmt(stmt : Stmt::Block) : Nil
       execute_block(stmt.statements, Environment.new(environment))
     end
