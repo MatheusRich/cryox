@@ -9,7 +9,7 @@ describe Cryox do
     f.assert "it uses second operand if first is falsey"
   end
 
-  feature "looping" do |f|
+  feature "while-loops" do |f|
     f.assert "it runs on true conditions"
     f.assert "it runs on truthy conditions"
   end
