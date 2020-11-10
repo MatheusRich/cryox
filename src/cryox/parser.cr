@@ -39,12 +39,50 @@ module Cryox
     end
 
     private def statement : Stmt
+      return for_statement if match(TokenType::FOR)
       return if_statement if match(TokenType::IF)
       return print_statement if match(TokenType::PRINT)
       return while_statement if match(TokenType::WHILE)
       return Stmt::Block.new(block) if match(TokenType::LEFT_BRACE)
 
       expression_statement
+    end
+
+    private def for_statement : Stmt
+      consume(TokenType::LEFT_PAREN, "Expect '(' after 'for'.")
+
+      initializer : Stmt?
+      if match(TokenType::SEMICOLON)
+        initializer = nil
+      elsif match(TokenType::VAR)
+        initializer = var_declaration
+      else
+        initializer = expression_statement
+      end
+
+      condition = if !match(TokenType::SEMICOLON)
+                    expression
+                  else
+                    Expr::Literal.new(true)
+                  end
+      consume(TokenType::SEMICOLON, "Expect ';' after loop condition.")
+
+      increment : Expr? = nil
+      increment = expression unless check(TokenType::RIGHT_PAREN)
+      consume(TokenType::RIGHT_PAREN, "Expect ')' after for clauses.")
+
+      body = statement
+
+      if increment
+        body = Stmt::Block.new([body, Stmt::Expression.new(increment)])
+      end
+      body = Stmt::While.new(condition, body)
+
+      if initializer
+        body = Stmt::Block.new([initializer, body])
+      end
+
+      body
     end
 
     private def if_statement : Stmt

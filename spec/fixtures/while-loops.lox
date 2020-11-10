@@ -10,5 +10,15 @@ while(n) {
   n = nil;
 }
 
+n = 0;
+var message = "";
+while(n < 2) {
+  if(n == 0) message = message + "it runs ";
+  else if(n == 1) message = message + "multiple times";
+
+  n = n + 1;
+}
+print message;
+
 while(false) print "fails";
 while(nil) print "fails";

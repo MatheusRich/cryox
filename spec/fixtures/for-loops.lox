@@ -1,0 +1,23 @@
+var a = "fal";
+for (a = a + "s"; a != "false";) {
+  print "it allows expressions in the initializer";
+  a = a + "e";
+}
+
+for (var b = true; b == true; b = false) {
+  print "it allows declaring a var in the initializer";
+}
+
+var message = "";
+var current = "";
+for (var i = 0; i < 3; i = i + 1) {
+  if (i == 0) current = "it runs ";
+  else if (i == 1) current = "multiple ";
+  else  current = "times";
+
+  message = message + current;
+}
+print message;
+
+for(;false;) print "fails";
+for(;nil;) print "fails";
