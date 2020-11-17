@@ -3,3 +3,5 @@
 /bin/
 /.shards/
 *.dwarf
+coverage/
+run_tests*
