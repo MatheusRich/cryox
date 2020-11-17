@@ -56,8 +56,7 @@ module Cryox
 
     private def self.run(src)
       tokens = Scanner.new(src).scan_tokens
-      parser = Parser.new(tokens)
-      statements = parser.parse
+      statements = Parser.new(tokens).parse
 
       return if had_error
       return if had_runtime_error

@@ -23,7 +23,7 @@ module Cryox
       statements
     end
 
-    private def declaration : Stmt?
+    private def declaration : Stmt
       return var_declaration if match(TokenType::VAR)
 
       statement
