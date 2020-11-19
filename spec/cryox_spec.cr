@@ -20,4 +20,10 @@ describe Cryox do
     f.assert "it allows declaring a var in the initializer"
     f.assert "it runs multiple times"
   end
+
+  feature "logical-operators" do |f|
+    f.assert "it shorts circuit on 'or' with truthy left branch"
+    f.assert "it returns right branch on 'or' with falsey left branch"
+    f.assert "it returns right branch on 'and' with truthy left branch"
+  end
 end

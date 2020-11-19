@@ -1,0 +1,5 @@
+print("it shorts circuit on 'or' with truthy left branch" or "fails");
+print(false or "it returns right branch on 'or' with falsey left branch" or "fails");
+print(nil and "fails");
+print(false and "fails");
+print("fails" and "it returns right branch on 'and' with truthy left branch");

@@ -175,7 +175,7 @@ module Cryox
     private def and_expr : Expr
       expr = equality
 
-      while match(TokenType::OR)
+      while match(TokenType::AND)
         operator = previous
         right = equality
         expr = Expr::Logical.new(expr, operator, right)
