@@ -45,7 +45,7 @@ module Cryox
     end
 
     def visit_unary_expr(expr : Expr::Unary) : LoxObj
-      right : LoxObj = evaluate(expr.right)
+      right = evaluate(expr.right)
 
       case expr.operator.type
       when .minus?
@@ -64,12 +64,13 @@ module Cryox
     end
 
     def visit_binary_expr(expr : Expr::Binary) : LoxObj
-      left : LoxObj = evaluate(expr.left)
-      right : LoxObj = evaluate(expr.right)
+      left = evaluate(expr.left)
+      right = evaluate(expr.right)
 
       case expr.operator.type
       when .greater?
         check_number_operands(expr.operator, left, right)
+
         return left.as(Float64) > right.as(Float64)
       when .greater_equal?
         check_number_operands(expr.operator, left, right)
@@ -188,17 +189,11 @@ module Cryox
       a == b
     end
 
-    private def stringify(object : LoxObj) : String
-      return "nil" if object.nil?
+    private def stringify(obj : LoxObj) : String
+      return "nil" if obj.nil?
+      return obj.to_s.rchop(".0") if obj.is_a? Float64
 
-      if object.is_a? Float64
-        text = object.to_s
-        text = text.gsub(".0", "") if text.ends_with? ".0"
-
-        return text
-      end
-
-      object.to_s
+      obj.to_s
     end
 
     private def check_number_operand(operator : Token, operand : LoxObj)
