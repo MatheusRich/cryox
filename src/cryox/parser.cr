@@ -106,8 +106,7 @@ module Cryox
 
     private def var_declaration : Stmt
       name = consume(TokenType::IDENTIFIER, "Expect variable name.")
-      initializer : Expr = Expr::Literal.new(nil)
-      initializer = expression if match(TokenType::EQUAL)
+      initializer = match(TokenType::EQUAL) ? expression : Expr::Literal.new(nil)
       consume(TokenType::SEMICOLON, "Expect ';' after variable declaration.")
 
       Stmt::Var.new(name, initializer)

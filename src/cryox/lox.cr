@@ -18,6 +18,7 @@ module Cryox
         # TODO: Print expressions
         self.run(gets || "")
         self.had_error = false
+        self.had_runtime_error = false
       end
     end
 
@@ -43,7 +44,7 @@ module Cryox
     end
 
     def self.runtime_error(error : RuntimeError)
-      puts "#{error.message}\n[line #{error.token.line}]"
+      puts "[line #{error.token.line}] #{error.message}\n"
 
       self.had_runtime_error = true
     end
