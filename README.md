@@ -1,6 +1,7 @@
 # Cryox
 
-> [!WARN]
+> [!WARNING]
+>
 > This repo eventually became [Lit](https://lit-lang.org/). No activity here. Sorry.
 
 ## Installation
